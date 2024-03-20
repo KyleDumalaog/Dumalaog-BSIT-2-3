@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title class="top">
-    Home Page
+      Home Page
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -15,10 +15,15 @@
 
   <div style="text-align:center">
     <br>
-    <strong style="font-size: x-large;">This is the first page.<br></strong>
+    <strong style="font-size: x-large;">Array Sample<br></strong>
     <br>
-    <ion-button href="second-page">Go By Link</ion-button>
-    <ion-button (click)="goToMySecondPage()">Go By Event</ion-button>
-    <ion-button (click)="goWithAuthorization()">Authorize</ion-button>
+    <div *ngIf="isLoading">{{LoadingText}}</div>
+    <div *ngIf="showArray">[ {{objArray}} ]</div>
+    <ion-button (click)="authenticate()">Authenticate</ion-button><br>
+    <ion-button (click)="showObj()">Show Object</ion-button><br>
+    <ion-button (click)="addObj()">Add to Object</ion-button><br>
+    <ion-button (click)="unauthenticate()">Unauthenticate</ion-button>
+    <p>{{data}}</p>
+    <br>
   </div>
 </ion-content>

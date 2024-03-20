@@ -1,35 +1,91 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { DataService } from '../data.service';
 import { AuthenticationService } from '../authentication.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
 })
-export class HomePage implements OnInit {
+export class HomePage {
+  data: string = '';
+  LoadingText: String = 'Loading...';
+  isLoading: boolean = false;
+  showArray: boolean = false;
+  objNum = 0;
+  objArray = [""];
+  private dataService = this.DataService;
 
-  constructor(private authorizationService: AuthenticationService, private router: Router) { }
+  constructor(private AuthenticationService: AuthenticationService, private router: Router, private DataService: DataService) {
 
+  }
   ngOnInit(): void {
   }
-  ionViewWillEnter() {
-    console.log("You will now enter home page.")
-  }
-  ionViewDidEnter() {
-    console.log("You did enter home page.")
-  }
-  ionViewWillLeave() {
-    console.log("You will now leave home page.")
-  }
-  ionViewDidLeave() {
-    console.log("You did leave home page.")
+
+  async fetchData() {
+    try {
+      this.data = await this.DataService.fetchData(this.AuthenticationService.authenticate);
+      console.log(this.data);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  goWithAuthorization() {
-    this.authorizationService.canProceed = true;
+  authenticate() {
+    this.isLoading = true;
+    this.showArray = false;
+    setTimeout(() => {
+      this.isLoading = false;
+      this.AuthenticationService.authenticate = true
+      alert('Access Granted.');
+    }, 2000);
   }
-  goToMySecondPage() {
-    this.router.navigate(["second-page"])
+
+  unauthenticate() {
+    this.isLoading = true;
+    this.showArray = false;
+    setTimeout(() => {
+      this.isLoading = false;
+      this.AuthenticationService.authenticate = false;
+      alert('Access is now removed.');
+    }, 2000);
+  }
+
+  async showObj() {
+    this.isLoading = true;
+    this.showArray = false;
+    await this.dataService
+      .fetchData(this.AuthenticationService.authenticate)
+      .then(() => {
+        console.log(this.objArray);
+        this.showArray = true;
+      })
+      .catch((error) => {
+        alert('Access Denied.');
+        console.error('Show Object.', error);
+      })
+      .finally(() => {
+        this.isLoading = false;
+      });
+  }
+
+  async addObj() {
+    this.isLoading = true;
+    this.showArray = false;
+    await this.dataService
+      .fetchData(this.AuthenticationService.authenticate)
+      .then((data) => {
+        console.log(data);
+        this.objArray = [...this.objArray, this.objNum.toString()];
+        this.objNum += 1;
+      })
+      .catch((error) => {
+        alert('Access Denied.');
+        console.error('Add to Object failed.', error);
+      })
+      .finally(() => {
+        this.isLoading = false;
+      });
   }
 
 }
